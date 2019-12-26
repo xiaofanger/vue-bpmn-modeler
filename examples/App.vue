@@ -9,7 +9,7 @@ import demo from './demo.bpmn';
 export default {
   data() {
     return {
-      propXmlData: demo,
+      propXmlData: '',
       propTaskList: [
         {
           key: 'UserTask_06zjapk',

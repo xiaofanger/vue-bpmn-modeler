@@ -1,15 +1,28 @@
 <template>
   <div ref="container" class="containers" @mousemove="focusOut">
-    <div ref="canvas" class="canvas"></div>
+    <div ref="canvas" class="canvas" id="canvas"></div>
+    <div ref="properties" class="properties" id="properties"></div>
   </div>
 </template>
 
 <script>
 import BpmnModeler from "../../CustomModeler";
 import CustomTranslate from "../../CustomTranslate";
-import camundaModdleDescriptor from "camunda-bpmn-moddle/resources/camunda";
+
+// import camundaExtensionModule from 'camunda-bpmn-moddle/lib';
+// import camundaModdle from "camunda-bpmn-moddle/resources/camunda";
+
+
+import flowableExtensionModule from 'jp-flowable-bpmn-moddle/lib';
+import flowableModdle from "jp-flowable-bpmn-moddle/resources/flowable";
+
+
 import minimapModule from "diagram-js-minimap";
 import { debounce } from "min-dash";
+import propertiesPanelModule from 'bpmn-js-properties-panel';
+import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/bpmn';
+
+
 let customTranslateModule = {
   translate: ["value", CustomTranslate]
 };
@@ -33,14 +46,27 @@ export default {
   },
   mounted() {
     let canvas = this.$refs["canvas"];
+    let properties = this.$refs["properties"];
     this.modeler = new BpmnModeler({
       container: canvas,
+      propertiesPanel: {
+        parent: properties
+      },
       additionalModules: [
+        // 本地化
         customTranslateModule,
-        minimapModule
+        //
+        // camundaExtensionModule,
+        flowableExtensionModule,
+        // 缩略图
+        minimapModule,
+        // 属性面板
+        propertiesPanelModule,
+        propertiesProviderModule,
       ],
       moddleExtensions: {
-        camunda: camundaModdleDescriptor
+        // camunda: camundaModdle,
+        flowable: flowableModdle
       }
     });
     this.openDiagram(this.diagramXML);
@@ -128,6 +154,7 @@ export default {
 @import "~bpmn-js/dist/assets/diagram-js.css";
 @import "~bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
 @import "~diagram-js-minimap/assets/diagram-js-minimap.css";
+@import "~bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css";
 .containers {
   position: absolute;
   background-color: #ffffff;
@@ -138,6 +165,12 @@ export default {
 }
 .canvas {
   width: 100%;
+  height: 100%;
+}
+.properties {
+  position: absolute;
+  top: 0;
+  right: 0;
   height: 100%;
 }
 </style>
